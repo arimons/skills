@@ -22,6 +22,10 @@ tags: [gemini, openai, claude, anthropic, llm, api, model]
 > 최신 모델, Responses API 문서가 developers 문서에 먼저 반영되는 경우가 있다.
 > Gemini는 `https://ai.google.dev/gemini-api/docs`의 모델/이미지 생성 문서를
 > 우선 확인한다.
+>
+> ⚠️ Context7 예외: 이 스킬을 적용하는 모델명 검증/최신 모델 확인 작업에서는
+> Context7을 기준으로 삼지 않는다. Context7은 GA/안정 문서 중심으로 인덱싱되어
+> preview 또는 갓 출시된 모델을 누락할 수 있으므로, 아래 공식 문서를 직접 확인한다.
 
 ---
 
