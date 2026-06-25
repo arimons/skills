@@ -1,14 +1,3 @@
----
-name: llm-model-reference
-description: >
-  Use this skill whenever writing, reviewing, or suggesting code that calls
-  Gemini API, OpenAI API, or Anthropic Claude API — including any model string,
-  SDK initialization, or model selection decision. Also triggers when the user
-  asks which model to use for Gemini, OpenAI, or Claude. Do NOT use this skill
-  for general AI theory questions unrelated to API code.
-tags: [gemini, openai, claude, anthropic, llm, api, model]
----
-
 # LLM Model Reference — 2026.05 기준
 
 > 이 SKILL의 목적: 코드에서 LLM 모델명을 사용할 때 outdated/deprecated 모델이
@@ -79,7 +68,22 @@ tags: [gemini, openai, claude, anthropic, llm, api, model]
   별도 경로로 취급한다.
 - `gemini-3-flash` deprecated 예정이라는 주장은 **근거 없음** (2026.03 기준)
 - 모든 Gemini 3 계열은 현재 preview 상태 (GA 미완료)
-- thinking 제어는 대상 모델의 공식 문서에서 최신 파라미터명을 확인한다.
+
+#### Thinking Budget 설정 (⚠️ 누락 시 max_tokens 초과 오류 발생)
+
+Gemini thinking 모델은 `thinking_budget`을 명시하지 않으면 모델 기본값이 활성화되어
+응답 토큰이 급격히 늘어나고 max_tokens 초과로 응답이 잘린다.
+**Gemini 코드 작성 시 반드시 작업 유형에 맞는 budget을 설정하거나, 사용자에게 확인한다.**
+
+| 작업 유형 | thinking_budget | 이유 |
+|----------|----------------|------|
+| 단순 분류 / 추출 / 포맷 변환 | `0` (no thinking) | thinking 불필요, 비용/속도 최적 |
+| 문맥 번역 / 요약 / 품질 필요 작업 | `1024` | 최소한의 reasoning으로 품질 확보 |
+| 복잡한 추론 / 다단계 분석 | `8192` 이상 | 작업 복잡도에 따라 조정 |
+
+> **Agent 행동 규칙**: Gemini API 코드를 작성할 때는 thinking_budget 값을 코드에
+> 명시하거나, 불명확한 경우 사용자에게 "이 작업이 단순 분류인지, 품질이 필요한
+> 작업인지" 확인한 뒤 위 표를 기준으로 설정한다. 기본값(미설정)으로 코드를 작성하지 않는다.
 
 ### 예시 코드 (Python)
 
@@ -93,7 +97,37 @@ from google.genai import types
 
 client = genai.Client(api_key="YOUR_API_KEY")
 
-# 일반 요청
+# ✅ 단순 분류 / 추출 — thinking 없음 (budget=0)
+response = client.models.generate_content(
+    model="gemini-3-flash-preview",
+    contents="다음 텍스트의 감정을 긍정/부정/중립 중 하나로만 답해줘: ...",
+    config=types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(thinking_budget=0),
+        max_output_tokens=10,
+    )
+)
+
+# ✅ 문맥 번역 / 품질 필요 작업 — budget=1024
+response = client.models.generate_content(
+    model="gemini-3-flash-preview",
+    contents="다음 문장을 자연스러운 한국어로 번역해줘: ...",
+    config=types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(thinking_budget=1024),
+        max_output_tokens=2048,
+    )
+)
+
+# ✅ 복잡한 추론 — budget 높게
+response = client.models.generate_content(
+    model="gemini-3.1-pro-preview",
+    contents="...",
+    config=types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(thinking_budget=8192),
+        max_output_tokens=4096,
+    )
+)
+
+# ✅ 일반 요청 (thinking 불필요한 경우)
 response = client.models.generate_content(
     model="gemini-3.1-pro-preview",
     contents="..."
@@ -127,6 +161,9 @@ response = client.models.generate_content(
 # ❌ 사용 금지 모델명
 # client.models.generate_content(model="gemini-2.5-flash", ...)   # 6월 종료 예정
 # client.models.generate_content(model="gemini-1.5-pro", ...)     # 이미 종료
+
+# ❌ thinking_budget 미설정 — 기본값 활성화로 max_tokens 초과 위험
+# config=types.GenerateContentConfig(max_output_tokens=512)  # thinking_budget 없음 ← 위험
 ```
 
 ---
@@ -273,4 +310,4 @@ response = client.messages.create(
   https://developers.openai.com/api/docs/changelog
 - Claude: https://docs.anthropic.com/en/docs/about-claude/models
 
-> 마지막 업데이트: 2026.05.14
+> 마지막 업데이트: 2026.06.25
