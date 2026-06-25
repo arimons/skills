@@ -14,8 +14,7 @@ npx skills add arimons/skills -g
 
 | 스킬 | 설명 |
 |------|------|
-| `context7-usage` | LLM API 코드 작성 시 Context7로 최신 문서 조회 강제 |
-| `llm-model-reference` | Gemini/OpenAI/Claude 현행 모델 레퍼런스 (deprecated 방지) |
+| `llm-model-reference` | Gemini/OpenAI/Claude 현행 모델 레퍼런스 (deprecated 방지, thinking budget 가이드 포함) |
 | `grill-me` | 프로젝트 설계 전 인터뷰로 막연한 아이디어를 구체적 설계로 변환 |
 
 ## 업데이트
