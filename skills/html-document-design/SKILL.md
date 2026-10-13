@@ -1,6 +1,6 @@
 ---
 name: html-document-design
-description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·보고서·기획서·가이드·아티팩트를 만들거나 수정할 때 항상 적용. 라이트 모드 기본 + 기기 추종 그레이 다크모드 + 테마 전환 버튼, 헤딩 IBM Plex Sans KR, AMORE/PACIFIC Blue 토큰, 한글 mono fallback(Nanum Gothic Coding) 규칙 포함. Use when creating or editing any HTML document, report, or artifact.
+description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·보고서·기획서·가이드·아티팩트를 만들거나 수정할 때 항상 적용. 라이트 모드 기본 + 기기 추종 그레이 다크모드 + 테마 전환 버튼, 기본 서체 IBM Plex Sans KR(사내 공유용은 아리따 돋움), AMORE/PACIFIC Blue 토큰, 한글 mono fallback(Nanum Gothic Coding) 규칙 포함. Use when creating or editing any HTML document, report, or artifact.
 ---
 
 # HTML Document Design — 박창현 개인 가이드
@@ -16,15 +16,15 @@ description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·�
 3. **모든 색은 CSS 변수(토큰)로만.** 컴포넌트 규칙에 hex 직접 기입 금지. 다크 블록 안에서만 정의되는 색 금지(라이트 미정의 → 렌더 깨짐 1순위 원인). body 배경 반드시 명시.
 4. **테마는 3단 패턴**: 바닥 `:root`에 라이트 전체 팔레트 → `@media (prefers-color-scheme: dark)` 안에서 `:root:not([data-theme="light"])`로 다크 토큰 재정의 → `:root[data-theme="dark"]`로 수동 지정 대응.
 4b. **테마 전환 버튼을 반드시 넣는다.** 기기 설정 추종만으로는 부족하다. 문서 우측 상단에 `시스템 → 라이트 → 다크` 3단 순환 버튼을 두고, 선택은 `localStorage`에 try/catch로 보관한다. `시스템`일 때는 `data-theme` 속성을 지운다. 인쇄 시 숨긴다.
-5. **헤딩은 IBM Plex Sans KR** — h1·h2는 weight 700 + letter-spacing -0.02em, h3는 600 + -0.01em, 색은 --head. 위계는 3단계 이하. (이 서체는 700이 최대 굵기다. 더 굵은 헤딩이 필요한 문서에 한해 Noto Sans KR 800을 쓴다.)
-6. **이미지는 항상 문서 안에 넣는다.** 이미지·아이콘은 `data:` URI(base64)로 인라인하고, 다이어그램은 이미지 대신 인라인 SVG를 우선한다. **폰트는 공유 경로에 따라 갈린다** — OneDrive 링크·Teams로 파일을 공유할 때만 base64 `@font-face`로 임베드하고, 그 외에는 CDN 링크를 그대로 둔다(아래 "산출물 분기" 절).
+5. **서체는 IBM Plex Sans KR이 기본**, 사내 공유(OneDrive·Teams)용은 아리따 돋움이다("산출물 분기" 절). 헤딩은 h1·h2가 weight 700 + letter-spacing -0.02em, h3는 600 + -0.01em, 색은 --head. 위계는 3단계 이하. (Plex는 700이 최대 굵기다. 아리따일 때는 자간을 `data-font="arita"`가 함께 조인다.)
+6. **이미지는 항상 문서 안에 넣는다.** 이미지·아이콘은 `data:` URI(base64)로 인라인하고, 다이어그램은 이미지 대신 인라인 SVG를 우선한다. **폰트는 파일에 담지 않는다.** 기본은 Google Fonts(Plex), 사내 공유용은 전사 PC에 설치된 아리따 돋움을 이름으로 부른다(아래 "산출물 분기" 절).
 7. **monospace 영역의 한글 fallback**: 영문 mono 폰트(IBM Plex Mono 등)는 한글 글리프가 없어 굴림으로 떨어진다. 반드시 `"IBM Plex Mono", "Nanum Gothic Coding", "D2Coding", monospace` 겹침 스택을 사용해 한글이 나눔 코딩 계열로 렌더되게 한다. Google Fonts 환경에서는 Nanum Gothic Coding을 함께 로드한다.
 
 ## 글은 어떻게 쓰나
 
 이 스킬은 **어떻게 보이는가**만 다룬다. 문장을 어떤 목소리로 쓸지는 `manual-voice` 스킬에 있다.
 
-설명하는 성격의 문서 — 매뉴얼·가이드·튜토리얼·교재 — 를 HTML로 만들 때는 **`manual-voice`가 설치되어 있으면 두 스킬을 함께 적용한다. 설치되지 않았다면 이 스킬을 적용하고 사용자가 요청한 문체를 따른다. `manual-voice`는 이 묶음에 포함되지 않은 선택 의존성이다.** 잘 만든 판에 딱딱한 글이 얹히면 읽히지 않는다. 대시보드나 표 위주의 산출물처럼 읽을 문장이 거의 없는 경우에는 이 스킬만으로 충분하다.
+설명하는 성격의 문서 — 매뉴얼·가이드·튜토리얼·교재 — 를 HTML로 만들 때는 **`manual-voice`가 설치되어 있으면 두 스킬을 함께 적용한다. 설치되지 않았다면 사용자가 요청한 문체를 따른다. `manual-voice`는 이 묶음에 포함되지 않은 선택 의존성이다.** 잘 만든 판에 딱딱한 글이 얹히면 읽히지 않는다. 대시보드나 표 위주의 산출물처럼 읽을 문장이 거의 없는 경우에는 이 스킬만으로 충분하다.
 
 ## 색 토큰
 
@@ -36,11 +36,13 @@ description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·�
 
 ## 타이포그래피
 
-- 문서형 HTML의 서체는 어디서 열리든 같다: Heading·Body 모두 "IBM Plex Sans KR"(wght 400;500;600;700), Mono "IBM Plex Mono"+"Nanum Gothic Coding". 공유 경로에 따라 갈리는 건 로드 방식뿐이다. (Pretendard는 슬라이드 HTML 전용이며 `amorepacific-presentation` 스킬이 맡는다.)
+- **기본**: Heading·Body 모두 "IBM Plex Sans KR"(wght 400;500;600;700), Mono "IBM Plex Mono"+"Nanum Gothic Coding".
+- **사내 공유용**: `<html data-font="arita">` 한 줄로 아리따 돋움 + 좁힌 자간(본문 -0.04em, 헤딩 -0.06em)으로 바뀐다. Mono 라벨은 그대로다.
+- 슬라이드 HTML은 문서형과 별개로 아리따 돋움을 기본으로 쓰며 `amorepacific-presentation` 스킬이 맡는다.
 - CDN 로드는 Google Fonts `@import`다. 아티팩트는 `<head>`에 손댈 수 없으므로 `<style>` 첫 줄 `@import`로 로드한다.
 - H1 clamp(28~40px)/700, H2 24px/700, H3 16.5px/600, 본문 15~16px/line-height 1.75.
 - 본문 텍스트 폭 68ch 이내, 컨테이너 max-width 760~800px.
-- **헤딩과 한글 표 셀에 `word-break: keep-all`** (+ `overflow-wrap: break-word`). 없으면 한글 제목이 단어 중간에서 잘린다 — 임베드 폰트로 바꾼 뒤 특히 눈에 띈다. 숫자 정렬 열은 `font-variant-numeric: tabular-nums`.
+- **헤딩과 한글 표 셀에 `word-break: keep-all`** (+ `overflow-wrap: break-word`). 없으면 한글 제목이 단어 중간에서 잘린다 — 서체를 바꾼 뒤 특히 눈에 띈다. 숫자 정렬 열은 `font-variant-numeric: tabular-nums`.
 - 라벨·eyebrow는 mono 스택 + uppercase + letter-spacing(+0.08~0.14em), 문서당 1~2종만.
 
 ## 컴포넌트
@@ -89,51 +91,41 @@ description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·�
 
 `시스템`에서 `data-theme`를 지우는 것이 핵심이다. 속성이 없어야 `prefers-color-scheme`가 다시 살아난다.
 
-## 산출물 분기 — OneDrive·Teams로 공유하는가
+## 산출물 분기 — 사내 공유(OneDrive·Teams)인가
 
-폰트를 받아오는 주체는 파일이 놓인 곳이 아니라 **문서를 여는 사람의 브라우저**다. Teams·OneDrive 뷰어는 외부 CDN을 막기 때문에, 그 경로로 나가는 파일만 폰트를 문서 안에 실어야 한다. 이미지는 어느 경우든 항상 `data:` URI다.
+폰트를 받아오는 주체는 파일이 놓인 곳이 아니라 **문서를 여는 사람의 브라우저**다. Teams·OneDrive 뷰어는 외부 CDN(Google Fonts·jsDelivr)을 막는다(2026-10-13 테스트). 반면 아리따 돋움은 전사 PC에 자동 설치돼 있어 네트워크가 필요 없다. 그래서 사내 공유용만 아리따로 간다. 이미지는 어느 경우든 항상 `data:` URI다.
 
-| | Claude 아티팩트 | 파일 — 그 외 (내 PC 등) | 파일 — **OneDrive 링크·Teams 공유** |
+| | Claude 아티팩트 | 파일 — **기본** (내 PC 등) | 파일 — **사내 공유** (OneDrive 링크·Teams) |
 |---|---|---|---|
-| 폰트 | Google Fonts `@import` | CDN `@import` 그대로 | **base64 `@font-face` 임베드** |
-| 이유 | 아티팩트 CSP가 Google Fonts만 허용 | 열 때 온라인이면 CDN에서 받아진다 | 뷰어가 외부 요청을 막아 맑은 고딕으로 떨어진다 |
-| 누가 | 그대로 게시 | 그대로 전달 | **에이전트가 `embed_fonts.py`를 돌려서 낸다** |
+| 서체 | IBM Plex Sans KR | IBM Plex Sans KR | **아리따 돋움** (`data-font="arita"`) |
+| 로드 | Google Fonts `@import` | Google Fonts `@import` | 설치된 폰트 이름으로 호출 (파일에 담지 않음) |
+| 자간 | 기본 | 기본 | 본문 -0.04em, 헤딩 -0.06em |
+| 이유 | 아티팩트 CSP가 Google Fonts만 허용 | 열 때 온라인이면 받아진다 | CDN이 막혀도 전사 PC에는 이미 설치돼 있다 |
 
 ### 파일로 낼 때 먼저 묻는다
 
-파일(.html)로 전달하기로 정해지면, 공유 경로가 대화에서 아직 드러나지 않았을 때 **한 번만** 묻는다: *"OneDrive나 Teams로 공유하실 건가요?"* 사용자가 이미 경로를 말했으면 묻지 않고 바로 분기한다. 답이 없거나 사용자가 자리에 없으면 **임베드로 간다** — 임베드는 어디서 열어도 안전하고, CDN 판은 공유 경로에서 깨질 수 있기 때문이다.
+파일(.html)로 전달하기로 정해지면, 공유 경로가 대화에서 아직 드러나지 않았을 때 **한 번만** 묻는다: *"사내 OneDrive나 Teams로 공유하실 건가요?"* 사용자가 이미 경로를 말했으면 묻지 않고 바로 분기한다. 답이 없거나 사용자가 자리에 없으면 **기본(Plex)으로 간다.** 아티팩트로 게시할 때는 묻지 않고 Plex다.
 
-### 임베드로 갈 때
+사내 공유로 정해지면 `<html lang="ko" data-font="arita">`로 바꾸는 것이 전부다. 폰트 파일을 만들거나 임베드하지 않는다.
 
-**이건 사용자가 하는 일이 아니다.** 전달 직전에 에이전트가 스크립트를 돌리고 **임베드본 하나만** 낸다. CDN 판과 임베드판을 둘 다 주지 않는다. 사용자에게 "공유하실 땐 이 명령을 돌리세요"라고 안내하는 것은 이 규칙을 지킨 것이 아니다.
+주의할 점:
+- 아리따는 사내 PC에만 있다. 사외로 나가는 파일(협력사 전달 등)에는 쓰지 않고 Plex로 둔다. 설치되지 않은 PC에서는 Pretendard → 맑은 고딕 순으로 대체돼 모양이 달라진다.
+- OneDrive·SharePoint 링크 뷰어는 사용자 스크립트를 기본 차단하므로 테마 토글이 안 돌 수 있다. 이때는 한 줄로 알린다.
+- Mac Finder 미리보기(Quick Look)는 스크립트와 일부 CSS가 제한될 수 있다. 문서형은 단일 열이라 대체로 문제없다.
 
-OneDrive·SharePoint 링크로 공유할 때는 뷰어가 샌드박스 도메인에서 열며 외부 리소스를 막고, 사용자 스크립트도 기본 차단이라 테마 토글이 안 돌 수 있다. 이 경우 임베드본이어도 토글은 동작하지 않을 수 있다고 한 줄로 알린다.
+### 사내 공유에서도 Plex를 꼭 유지해야 할 때 (예외)
 
-## 폰트 임베드 (`embed_fonts.py`)
-
-**OneDrive·Teams로 공유할 때만** 돌린다. 동봉된 스크립트가 외부 `@import`/`<link>`를 지우고 그 자리에 base64 `@font-face`를 넣는다. 결과물은 네트워크 없이도 의도한 서체로 렌더된다.
+아리따 대신 Plex를 그대로 보여 줘야 하는 경우에 한해 `embed_fonts.py`로 base64 임베드한다. 기본 흐름이 아니므로 사용자가 요청할 때만 쓴다.
 
 ```bash
-python3 embed_fonts.py doc.html -o doc_embed.html      # 기본 = fixed
-python3 embed_fonts.py doc.html --mode doc             # 메일 첨부 등 용량이 걸릴 때만
-python3 embed_fonts.py deck.html --family pretendard   # 슬라이드 HTML (amorepacific-presentation 에서 호출)
+python3 embed_fonts.py doc.html -o doc_embed.html      # 기본 = fixed (+약 1.0MB)
+python3 embed_fonts.py doc.html --mode doc             # 용량이 걸릴 때만 (+약 0.25MB)
 ```
 
-전달 직전, 본문이 확정된 뒤에 돌린다. 문서를 다시 고쳤으면 다시 돌린 판으로 교체한다.
-
-| 모드 | 담기는 글자 | 문서 증가분 | 언제 |
-|---|---|---|---|
-| `fixed` *(기본)* | KS X 1001 한글 2350자 + 라틴 + 구두점 | 약 +1.0MB | **거의 항상.** 나중에 손으로 문장을 고쳐도 안 깨진다 |
-| `doc` | 문서에 실제로 등장한 글자만 | 약 +0.25MB | 메일 첨부처럼 용량이 걸릴 때만 |
-
-`doc` 모드의 함정: 이후 새 한글을 손으로 넣으면 **그 글자만** 대체 서체로 떨어진다. 문서를 다시 고쳤으면 스크립트를 다시 돌린다.
-
-담기는 서체는 `--family`로 고른다. 기본 `plex`는 IBM Plex Sans KR 400·500·600·700, IBM Plex Mono 400·500, Nanum Gothic Coding 400·700(문서 +약 1.0MB). `pretendard`는 Pretendard 400·500·600·700·800(문서 +약 0.9MB)이다. 폰트 원본은 최초 1회 npm(`@fontsource/*`, `pretendard`)에서 받아 작업 공간의 `~/.cache/ap-doc-fonts`에 캐시한다. 필요: `fonttools`, `brotli`, node.
-
-> 스킬 파일을 읽을 때 base64 덩어리를 컨텍스트에 올리지 않는다. 임베드는 **스크립트를 실행해서** 하고, 결과 파일을 열어 확인하지 않는다.
+전달 직전, 본문이 확정된 뒤에 에이전트가 직접 돌리고 임베드본 하나만 낸다. `--family pretendard`는 Pretendard 문서용이다. 스킬 파일을 읽을 때 base64 덩어리를 컨텍스트에 올리지 않는다.
 
 ## 산출·검수
 
-- 단일 self-contained HTML로 전달. 폰트는 공유 경로로 분기한다(위 절): OneDrive·Teams 공유면 임베드본, 그 외는 CDN. CDN 로드는 @import보다 `<link>` 우선.
+- 단일 self-contained HTML로 전달. 서체는 공유 경로로 분기한다(위 절): 사내 공유면 `data-font="arita"`, 그 외는 Plex(Google Fonts). CDN 로드는 @import보다 `<link>` 우선.
 - 파일명: `<주제>_<문서성격>.html`, 소문자+언더스코어.
-- 게시 전 체크: ① 라이트/다크 양쪽에서 모든 색이 토큰으로 해석되는가 ② 다크에 네이비·유채색 배경이 없는가 ③ mono 영역 한글이 굴림으로 떨어지지 않는가 ④ 표가 페이지 가로 스크롤을 만들지 않는가 ⑤ 헤딩이 IBM Plex Sans KR + --head 적용됐는가 ⑥ 테마 전환 버튼이 3단 순환하고 새로고침 후에도 선택이 유지되는가 ⑦ 한글 헤딩이 단어 중간에서 잘리지 않는가 ⑧ OneDrive·Teams 공유본이면 외부 요청이 0건인가 — 폰트·이미지가 모두 인라인인지 확인. 그 외 파일은 이미지만 인라인이면 된다.
+- 게시 전 체크: ① 라이트/다크 양쪽에서 모든 색이 토큰으로 해석되는가 ② 다크에 네이비·유채색 배경이 없는가 ③ mono 영역 한글이 굴림으로 떨어지지 않는가 ④ 표가 페이지 가로 스크롤을 만들지 않는가 ⑤ 헤딩이 의도한 서체(기본 Plex, 사내 공유 아리따) + --head 적용됐는가 ⑥ 테마 전환 버튼이 3단 순환하고 새로고침 후에도 선택이 유지되는가 ⑦ 한글 헤딩이 단어 중간에서 잘리지 않는가 ⑧ 사내 공유본이면 외부 요청이 0건인가 — Google Fonts `@import`가 남아 있어도 서체는 아리따로 잡히지만, 막힌 요청이 생기지 않도록 이미지가 모두 인라인인지 확인.

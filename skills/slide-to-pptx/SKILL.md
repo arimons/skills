@@ -11,17 +11,14 @@ description: '1920x1080 고정 좌표로 짜인 슬라이드형 HTML을 편집 �
 
 ```bash
 python3 scripts/html2pptx.py deck.html deck.pptx
-python3 scripts/html2pptx.py deck.html deck.pptx --font "Arita Dotum KR"
+python3 scripts/html2pptx.py deck.html deck.pptx --font "Pretendard" --font-bold "Pretendard"
 ```
 
-`--font`를 주지 않으면 Pretendard로 지정됩니다. 받는 사람 PC에 그 폰트가 없을 게 확실하면 회사 공통 폰트를 지정하는 편이 안전합니다.
+`--font`를 주지 않으면 아리따 돋움으로 지정됩니다. 본문은 "Arita Dotum KR Medium", 굵은 글씨는 "Arita Dotum KR Bold"입니다. 이 서체는 굵기마다 서체 이름이 따로라서 bold 속성 대신 이름으로 구분합니다. 전사 PC에 자동 설치되므로 폰트 첨부도 필요 없습니다. 다른 서체로 내보낼 때만 `--font`를 지정하고, 굵기 서체가 따로 없으면 `--font-bold`에 같은 이름을 줍니다.
 
-## 폰트 첨부 (공유용일 때만)
+## 폰트 첨부
 
-PPTX의 폰트 첨부는 스크립트로 되지 않고 PowerPoint의 저장 옵션으로만 됩니다. 그래서 변환 결과를 넘길 때 공유 여부로 갈립니다. 변환 전에 공유 경로가 드러나 있지 않으면 한 번 묻습니다: "OneDrive나 Teams로 공유하실 건가요?"
-
-- **OneDrive·Teams로 공유**: 변환 결과와 함께 한 줄로 안내합니다. "PowerPoint에서 열어 파일 → 옵션 → 저장 → '파일에 글꼴 포함'을 체크하고 저장하세요. 발표용 최종본만 공유한다면 '사용된 문자만 포함', '공통 시스템 글꼴 제외' 모두 체크해도 됩니다."
-- **그 외(내 PC에서만 열기 등)**: 폰트 첨부를 안내하지 않습니다.
+기본 서체인 아리따 돋움은 전사 PC에 자동 설치되므로 폰트를 첨부하지 않습니다. 질문도 하지 않습니다. Pretendard처럼 설치되지 않은 서체로 내보내서 다른 사람에게 보낼 때만, PowerPoint의 저장 옵션(파일 → 옵션 → 저장 → 파일에 글꼴 포함)을 켜라고 한 줄로 안내합니다. 이 옵션은 스크립트로 되지 않습니다.
 
 ## 전제
 

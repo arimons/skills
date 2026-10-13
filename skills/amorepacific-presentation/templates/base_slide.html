@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>제목</title>
 <style>
+/* 폰트: 아리따 돋움(Arita Dotum KR)은 전사 PC에 자동 설치되므로 파일에 담지 않는다.
+   이 서체는 굵기마다 파일이 따로이고 Regular가 없어서, local()로 굵기를 직접 연결한다.
+   400·500은 Medium, 600은 SemiBold, 700·800은 Bold로 간다. 설치되지 않은 PC는 Pretendard → 맑은 고딕 순으로 대체된다. */
+@font-face{font-family:"Arita Dotum KR";font-weight:300;src:local("Arita Dotum KR Light"),local("AritaDotumKR-Light")}
+@font-face{font-family:"Arita Dotum KR";font-weight:400;src:local("Arita Dotum KR Medium"),local("AritaDotumKR-Medium")}
+@font-face{font-family:"Arita Dotum KR";font-weight:500;src:local("Arita Dotum KR Medium"),local("AritaDotumKR-Medium")}
+@font-face{font-family:"Arita Dotum KR";font-weight:600;src:local("Arita Dotum KR SemiBold"),local("AritaDotumKR-SemiBold")}
+@font-face{font-family:"Arita Dotum KR";font-weight:700;src:local("Arita Dotum KR Bold"),local("AritaDotumKR-Bold")}
+@font-face{font-family:"Arita Dotum KR";font-weight:800;src:local("Arita Dotum KR Bold"),local("AritaDotumKR-Bold")}
 :root{
   --amore-blue:#1F5795; --pacific-blue:#001C58; --black:#000000;
   --gray:#7D7D7D; --white:#FFFFFF; --off-white:#F7F9FC;
@@ -13,12 +22,12 @@
   --alert-red:#D9291C; --soft-red:#FDECEA;
   --success-green:#1C8C5A; --soft-green:#EAF6F0;
   --amber:#F2A900; --soft-amber:#FFF4D6;
-  --font-main:"Pretendard","Malgun Gothic","Segoe UI",system-ui,sans-serif;
+  --font-main:"Arita Dotum KR","Pretendard","Pretendard Variable","Malgun Gothic","Segoe UI",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:#dfe4ea;font-family:var(--font-main);color:var(--dark-gray)}
 .deck{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:22px;overflow:auto}
-.slide{position:relative;flex:0 0 auto;width:1920px;height:1080px;background:var(--white);overflow:hidden;
+.slide{position:relative;flex:0 0 auto;word-break:keep-all;overflow-wrap:break-word;width:1920px;height:1080px;background:var(--white);overflow:hidden;
   transform-origin:center center;box-shadow:0 18px 60px rgba(0,28,88,.13);display:none}
 .slide.active{display:block}
 
@@ -58,6 +67,11 @@ html,body{margin:0;background:#dfe4ea;font-family:var(--font-main);color:var(--d
   .controls{display:none}
 }
 </style>
+<noscript><style>
+/* 스크립트가 꺼진 미리보기(맥 Finder 스페이스바 등)용: 모든 슬라이드를 세로로 쌓고 창 폭에 맞춰 줄인다 */
+.deck{display:block;min-height:0;padding:12px;overflow:visible}
+.slide{display:block!important;margin:0 auto 14px;zoom:tan(atan2(calc(100vw - 24px),1920px))}
+</style></noscript>
 </head>
 <body>
 <div class="deck" id="deck">

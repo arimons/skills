@@ -25,11 +25,11 @@ npx skills update -g
 
 ## HTML 문서·발표자료 스킬
 
-2026-10-13 제공 ZIP에서 검토하여 추가한 스킬입니다.
+2026-10-13 제공 `ap-skills_20261013_r6.zip`에서 검토하여 반영한 r6 스킬입니다. 사내 공유 HTML과 PPTX의 기본 서체는 아리따 돋움이며, 슬라이드 템플릿은 Finder 미리보기도 지원합니다.
 
 | 스킬 | 설명 |
 |------|------|
-| `html-document-design` | HTML 보고서·가이드 디자인, 테마 전환, 한글 폰트 내장 |
+| `html-document-design` | HTML 보고서·가이드 디자인, 테마 전환, 사내 공유용 아리따 돋움 |
 | `amorepacific-presentation` | BY27 사내 HTML 발표자료 템플릿·로고·푸터 |
 | `slide-to-pptx` | 1920×1080 고정 배치 HTML을 편집 가능한 PPTX로 변환 |
 
@@ -40,7 +40,7 @@ npx skills update -g
 ### 실행 의존성
 
 - 자산 내장: Python 3 표준 라이브러리.
-- 폰트 내장: Python `fonttools`, `brotli` 및 Node.js/npm. 최초 실행 시 npm에서 폰트를 받아 `~/.cache/ap-doc-fonts`에 캐시합니다.
+- 선택적 폰트 내장(명시적으로 요청한 경우만): Python `fonttools`, `brotli` 및 Node.js/npm. 최초 실행 시 npm에서 폰트를 받아 `~/.cache/ap-doc-fonts`에 캐시합니다.
 - PPTX 변환: Python `playwright`, `python-pptx`, Playwright Chromium.
 - `manual-voice`는 선택 사항이며 이 저장소의 제공 ZIP에는 포함되지 않습니다.
 

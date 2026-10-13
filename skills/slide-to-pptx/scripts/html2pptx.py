@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """1920x1080 고정 좌표 HTML 슬라이드를 편집 가능한 PPTX로 옮긴다.
 
-    python3 html2pptx.py deck.html deck.pptx [--font "Arita Dotum KR"]
+    python3 html2pptx.py deck.html deck.pptx [--font "Arita Dotum KR Medium" [--font-bold "Arita Dotum KR Bold"]]
 
 브라우저에서 각 요소의 최종 좌표와 스타일을 읽어, 같은 자리에 PPT 도형과
 텍스트 상자를 놓는다. 1920px = 13.333in 이므로 1px = 1/144in.
@@ -23,7 +23,10 @@ from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.util import Emu, Pt
 
 PX = 914400 / 144.0  # 1px -> EMU
-FONT = "Pretendard"
+# 아리따 돋움은 굵기마다 파일·서체 이름이 따로이고 Regular가 없다(예: "Arita Dotum KR Bold").
+# 그래서 굵은 글씨는 bold 속성 대신 Bold 서체 이름을 쓴다(속성을 켜면 한 번 더 굵어진다).
+FONT = "Arita Dotum KR Medium"
+FONT_BOLD = "Arita Dotum KR Bold"
 
 EXTRACT = r"""
 () => {
@@ -132,7 +135,9 @@ def color(c):
     return RGBColor(int(c[0]), int(c[1]), int(c[2]))
 
 
-def build(html_path: str, out_path: str, font: str = FONT) -> None:
+def build(html_path: str, out_path: str, font: str = FONT, font_bold: str | None = None) -> None:
+    if font_bold is None and font == FONT:
+        font_bold = FONT_BOLD
     url = pathlib.Path(html_path).resolve().as_uri()
     with sync_playwright() as p:
         b = p.chromium.launch()
@@ -216,8 +221,10 @@ def build(html_path: str, out_path: str, font: str = FONT) -> None:
                     rn = para.add_run()
                     rn.text = run["t"]
                     rn.font.size = Pt(run["size"] / 2)
-                    rn.font.bold = run["bold"]
-                    rn.font.name = font
+                    if run["bold"] and font_bold:
+                        rn.font.name, rn.font.bold = font_bold, False
+                    else:
+                        rn.font.name, rn.font.bold = font, run["bold"]
                     rn.font.color.rgb = color(run["color"])
 
     # 눈으로 보지 않아도 걸러지는 것들만 자동 점검한다
@@ -244,11 +251,15 @@ def build(html_path: str, out_path: str, font: str = FONT) -> None:
 
 if __name__ == "__main__":
     args = [a for a in sys.argv[1:]]
-    font = FONT
+    font, font_bold = FONT, None
+    if "--font-bold" in args:
+        i = args.index("--font-bold")
+        font_bold = args[i + 1]
+        del args[i:i + 2]
     if "--font" in args:
         i = args.index("--font")
         font = args[i + 1]
         del args[i:i + 2]
     if len(args) < 2:
         sys.exit(__doc__)
-    build(args[0], args[1], font)
+    build(args[0], args[1], font, font_bold)

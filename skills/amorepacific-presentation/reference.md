@@ -20,7 +20,7 @@ Last Updated: 2026-08-31
 ```yaml
 Canvas: 1920 x 1080 px (16:9)
 Background: "#FFFFFF"
-Font: Pretendard
+Font: Arita Dotum KR (전사 PC 자동 설치)
 Title Color: "#001C58"
 Accent Color: "#1F5795"
 Body Color: "#333333"
@@ -268,13 +268,13 @@ On Dark Block:
 ### 4.1 Font Policy
 
 ```yaml
-Primary: Pretendard
-Template Reference: Arita Dotum KR (사내 공식 폰트)
-Fallback KR: Malgun Gothic
+Primary: Arita Dotum KR (사내 공식 폰트, 전사 PC 자동 설치 → 파일에 담지 않음)
+Fallback KR: Pretendard, Malgun Gothic
 Fallback EN: Aptos, Segoe UI, Arial
 
 Decision:
-  - AI 생성물(PPT/HTML)은 Pretendard 사용
+  - AI 생성물(PPT/HTML)은 Arita Dotum KR 사용. 굵기별 파일이 따로이고 Regular가 없으므로 템플릿의 local() @font-face로 굵기를 연결한다
+  - 400·500 = Medium, 600 = SemiBold, 700·800 = Bold. 굵기 800은 별도 파일이 없어 Bold로 간다
   - 브랜드 로고/슬로건은 폰트 재현 금지, 이미지 asset 사용
 ```
 
@@ -295,7 +295,7 @@ Decision:
 
 ```css
 :root {
-  --font-main: "Pretendard", "Malgun Gothic", "Segoe UI", system-ui, sans-serif;
+  --font-main: "Arita Dotum KR", "Pretendard", "Pretendard Variable", "Malgun Gothic", "Segoe UI", system-ui, sans-serif;
 
   --cover-title: 78px;   /* weight 800, letter-spacing -0.055em */
   --slide-title: 27px;   /* weight 700 */
@@ -777,7 +777,7 @@ Footer: 모든 콘텐츠 슬라이드에 고정
   --soft-green:    #EAF6F0;
   --amber:         #F2A900;
   --soft-amber:    #FFF4D6;
-  --font-main: "Pretendard", "Malgun Gothic", "Segoe UI", system-ui, sans-serif;
+  --font-main: "Arita Dotum KR", "Pretendard", "Pretendard Variable", "Malgun Gothic", "Segoe UI", system-ui, sans-serif;
 }
 ```
 
@@ -863,7 +863,7 @@ Brand:
   - [ ] AMORE Blue = 강조, PACIFIC Blue = 구조로 사용되었는가
   - [ ] 로고/슬로건이 텍스트로 재현되지 않았는가
   - [ ] 이미지 비율이 왜곡되지 않았는가
-  - [ ] Pretendard가 일관 적용되었는가
+  - [ ] Arita Dotum KR이 일관 적용되었는가 (본문 Medium, 제목 Bold)
 
 Layout:
   - [ ] 얇은 선 + 넓은 여백 스타일이 유지되었는가
@@ -910,5 +910,5 @@ v2.0 (2026-07-31):
 v1.0 (2026-07-31):
   - BY26 템플릿 분석 기반 초기 디자인 시스템 작성
   - CI 컬러(AMORE Blue / PACIFIC Blue) 반영
-  - Pretendard 기준 타이포그래피 정의
+  - Arita Dotum KR 기준 타이포그래피 정의
 ```

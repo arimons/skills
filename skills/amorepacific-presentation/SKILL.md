@@ -5,7 +5,7 @@ description: 'HTML 슬라이드로 아모레퍼시픽 사내 보고·발표자�
 
 # AMOREPACIFIC Presentation
 
-사내 보고용 발표자료를 HTML 슬라이드 덱으로 만드는 스킬입니다. 산출물은 항상 **Base64 자산이 내장된 단일 .html 파일 1개**이며, 받는 사람이 더블클릭만 하면 로고와 푸터까지 그대로 보여야 합니다. 로고·푸터 이미지는 항상 내장하고, **폰트(Pretendard)는 OneDrive·Teams로 공유할 때만** 내장합니다(아래 4번).
+사내 보고용 발표자료를 HTML 슬라이드 덱으로 만드는 스킬입니다. 산출물은 항상 **Base64 자산이 내장된 단일 .html 파일 1개**이며, 받는 사람이 더블클릭만 하면 로고와 푸터까지 그대로 보여야 합니다. 로고·푸터 이미지는 항상 내장하고, **폰트는 파일에 담지 않습니다.** 서체는 전사 PC에 자동 설치되는 아리따 돋움(Arita Dotum KR)이고, 템플릿이 이름으로 불러 씁니다.
 
 ## 작업 순서
 
@@ -13,10 +13,7 @@ description: 'HTML 슬라이드로 아모레퍼시픽 사내 보고·발표자�
 2. **레이아웃을 고른다.** `reference.md`의 Layout Patterns(5.4)과 Slide Type Library(8)에서 슬라이드마다 하나씩 선택합니다.
 3. **HTML을 만든다.** `templates/base_slide.html`을 뼈대로 삼고, CSS 변수와 규격은 `reference.md`를 따릅니다.
 4. **자산을 내장한다.** `python3 scripts/embed_assets.py <파일.html>` 을 실행하면 플레이스홀더가 Base64 data URI로 치환됩니다.
-5. **폰트를 내장할지 정한다.** 파일(.html)로 전달할 때, 공유 경로가 아직 드러나지 않았으면 한 번 묻습니다: "OneDrive나 Teams로 공유하실 건가요?" 이미 말했으면 묻지 않습니다.
-   - **OneDrive·Teams 공유** → Pretendard를 내장합니다(아래 "폰트 내장"). 답이 없거나 사용자가 자리에 없으면 이쪽으로 갑니다.
-   - **그 외(내 PC에서 열기 등)** → 폰트는 내장하지 않습니다. 이미지만 내장된 4번 결과를 그대로 냅니다.
-6. **검수한다.** `reference.md`의 Final Quality Checklist(14)를 확인합니다. 특히 콘텐츠가 footer line을 침범하지 않는지 실제로 렌더링해서 봅니다.
+5. **검수한다.** `reference.md`의 Final Quality Checklist(14)를 확인합니다. 특히 콘텐츠가 footer line을 침범하지 않는지 실제로 렌더링해서 봅니다.
 
 ## 반드시 지킬 것
 
@@ -53,20 +50,14 @@ HTML 작성 중에는 `src` 자리에 아래 토큰을 그대로 두고, 마지�
 
 치환 후 파일 안에 `assets/` 나 `{{ASSET:` 문자열이 남아 있으면 실패입니다. 스크립트가 이 검사를 대신 해 줍니다.
 
-## 폰트 내장 (OneDrive·Teams 공유일 때만)
+## 폰트 (아리따 돋움)
 
-슬라이드는 1920×1080 고정 좌표라서, 받는 PC에 Pretendard가 없으면 맑은 고딕으로 대체되면서 줄바꿈과 박스 안 여백이 틀어집니다. 그래서 공유본에만 폰트를 담습니다. Teams·OneDrive 뷰어는 외부 CDN을 막으므로 CDN 링크로는 해결되지 않습니다.
+슬라이드 서체는 아리따 돋움(Arita Dotum KR)입니다. 전사 PC에 자동 설치되므로 파일에 담지 않고, 질문도 하지 않습니다. 템플릿의 `@font-face`가 `local()`로 설치된 폰트를 이름으로 연결합니다.
 
-```bash
-python3 scripts/embed_assets.py deck.html
-python3 ../html-document-design/embed_fonts.py deck.html --family pretendard -o deck_share.html
-```
-
-- Pretendard 400·500·600·700·800이 담기고 파일은 약 0.9MB 늘어납니다. 모드는 기본 `fixed`를 씁니다. 슬라이드 문구는 나중에 손으로 고칠 일이 많아서 `doc` 모드는 쓰지 않습니다.
-- 위 명령의 스크립트 경로는 이 스킬의 실제 디렉터리 기준입니다. 작업 디렉터리와 입력 HTML 경로는 별도로 지정하고, 링크로 설치된 경우 실제 경로를 해석한 뒤 형제 `html-document-design` 디렉터리를 찾습니다.
-- 이 스크립트는 `html-document-design` 스킬에 있습니다. 스크립트 안내와 폰트 캐시 위치는 그 스킬의 "폰트 임베드" 절을 따릅니다.
-- 전달 직전, 본문이 확정된 뒤에 에이전트가 직접 돌리고 임베드본 하나만 냅니다. 사용자에게 명령을 안내하는 것으로 대신하지 않습니다.
-- PPTX로 변환해서 공유할 때는 HTML 폰트 내장이 필요 없습니다. 폰트는 PowerPoint 저장 옵션(파일 → 옵션 → 저장 → 파일에 글꼴 포함)으로 담습니다.
+- 이 서체는 굵기마다 파일이 따로이고 **Regular가 없습니다.** 파일은 Thin·Light·Medium·SemiBold·Bold 5종이며, 파일 안의 서체 이름은 "Arita Dotum KR Bold"처럼 굵기가 붙어 있습니다(2026-10-13 맥 설치본에서 확인).
+- 그래서 템플릿은 본문(400·500)을 Medium, 600을 SemiBold, 700·800을 Bold로 연결합니다. 800은 별도 파일이 없어 Bold입니다. 이 `@font-face` 블록을 지우지 마십시오.
+- 설치되지 않은 PC(외부 공유 등)는 Pretendard → 맑은 고딕 순으로 대체됩니다. 가변 폰트판 Pretendard는 "Pretendard Variable"이라는 다른 이름으로 등록되므로(2026-10-13 맥 설치본에서 확인) 서체 목록에 두 이름을 모두 둡니다. 이 경우 줄바꿈과 박스 안 여백이 틀어질 수 있습니다.
+- 제목의 자간(`letter-spacing`)은 원래 Pretendard 기준으로 잡은 값입니다. 아리따는 자간이 넓은 서체라 같은 값에서도 느낌이 다를 수 있으니, 렌더링해서 확인하십시오.
 
 ## 수치는 CSS 변수로 뺀다
 
@@ -87,6 +78,7 @@ python3 ../html-document-design/embed_fonts.py deck.html --family pretendard -o 
 
 - **슬라이드가 좁은 창에서 찌그러진다.** 스케일 컨테이너를 flex로 잡으면 고정 폭 1920px 슬라이드가 flex-shrink 기본값 1 때문에 컨테이너 폭에 맞춰 줄어들고, 그 상태에서 텍스트가 재배치된 뒤 scale이 걸립니다. 슬라이드에 `flex:0 0 auto`를 반드시 넣으십시오.
 - **미리보기 패널에서만 크기가 안 맞는다.** `resize` 이벤트는 브라우저 창 크기에만 반응합니다. iframe이나 패널 안에서 쓰려면 `ResizeObserver`로도 `fit()`을 호출해야 합니다.
+- **맥 Finder 미리보기(스페이스바)에서 슬라이드가 잘려 보인다.** 미리보기는 스크립트를 돌리지 않아서 `fit()`이 실행되지 않습니다. 템플릿의 `<noscript><style>`이 이 경우에만 모든 슬라이드를 세로로 쌓고 창 폭에 맞춰 줄입니다. 템플릿에서 이 블록을 지우지 마십시오. 브라우저(스크립트 켜짐)에서는 적용되지 않습니다.
 - **하단 강조 박스가 footer line을 침범한다.** 고정 높이 그리드 행의 합이 콘텐츠 영역보다 크면 아래로 넘칩니다. 렌더링해서 실제 좌표를 확인하십시오.
 
 ## 세부 규격
