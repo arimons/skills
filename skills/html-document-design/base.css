@@ -1,0 +1,194 @@
+/* ============================================================
+   base.css — HTML 문서 공용 스타일 v1.0
+   html_document_design_skill.md의 구현체
+   라이트 기본 · 다크는 기기 자동 추종(무채색 그레이) · 헤딩 800
+   ============================================================ */
+
+/* 폰트 로드 — 문서형 HTML은 어디서 열리든 IBM Plex Sans KR 계열이다.
+   [CDN, 기본] 아래 @import (Google Fonts). 내 PC에서 열거나 아티팩트로 게시할 때 그대로 쓴다.
+   [OneDrive·Teams 공유] 뷰어가 외부 CDN을 막으므로 이 @import는 embed_fonts.py 가 지우고
+   base64 @font-face 로 바꿔 넣는다. 손으로 고치지 않는다.
+   (Claude 아티팩트처럼 <head>에 손댈 수 없으면 이 @import를 <style> 첫 줄에 둔다.) */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Nanum+Gothic+Coding:wght@400;700&display=swap');
+
+/* ---------- 1. 색 토큰 ---------- */
+:root {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: #F7F9FC;
+  --ink: #333333;
+  --ink-soft: #5A6472;
+  --head: #001C58;       /* PACIFIC Blue — 헤드라인 */
+  --line: #E6EAF0;
+  --accent: #1F5795;     /* AMORE Blue — 강조 */
+  --accent-soft: #F7FBFF;
+  --amber: #B07C00;
+  --amber-soft: #FFF4D6;
+  --th-bg: #001C58;
+  --th-ink: #FFFFFF;
+
+  --font-sans: "IBM Plex Sans KR",
+               "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: "IBM Plex Mono", "Nanum Gothic Coding", "D2Coding", monospace;
+}
+
+/* 다크: black에서 살짝 올린 무채색 그레이. 네이비 배경 금지 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161618; --surface: #1E1E21; --surface-2: #252529;
+    --ink: #E8E8EA; --ink-soft: #A6A6AD; --head: #F0F0F2;
+    --line: #34343A; --accent: #82AEDE; --accent-soft: #212831;
+    --amber: #D9B15C; --amber-soft: #2E2817;
+    --th-bg: #26262B; --th-ink: #E8E8EA;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161618; --surface: #1E1E21; --surface-2: #252529;
+  --ink: #E8E8EA; --ink-soft: #A6A6AD; --head: #F0F0F2;
+  --line: #34343A; --accent: #82AEDE; --accent-soft: #212831;
+  --amber: #D9B15C; --amber-soft: #2E2817;
+  --th-bg: #26262B; --th-ink: #E8E8EA;
+}
+
+/* ---------- 2. 기본 ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);      /* 반드시 명시 — 호스트 배경 비침 방지 */
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 780px; margin: 0 auto; padding: 64px 24px 96px; }
+section { margin-top: 60px; }
+
+/* ---------- 3. 타이포그래피 ---------- */
+h1, h2, h3 { word-break: keep-all; overflow-wrap: break-word; }
+h1 {
+  font-weight: 700; letter-spacing: -0.02em;
+  font-size: clamp(28px, 5vw, 40px); line-height: 1.3;
+  color: var(--head); margin: 0 0 16px; text-wrap: balance;
+}
+h2 {
+  font-weight: 700; letter-spacing: -0.02em;
+  font-size: 24px; line-height: 1.4;
+  color: var(--head); margin: 0 0 16px; text-wrap: balance;
+}
+h3 { font-weight: 600; letter-spacing: -0.01em; font-size: 16.5px; color: var(--head); margin: 26px 0 8px; }
+p  { margin: 0 0 14px; max-width: 68ch; }
+.lede { color: var(--ink-soft); font-size: 17px; max-width: 64ch; }
+.soft { color: var(--ink-soft); }
+
+ul { padding-left: 20px; margin: 10px 0 16px; max-width: 66ch; }
+li { margin-bottom: 8px; }
+li::marker { color: var(--accent); }
+
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* 라벨류 (mono 스택: 영문 Plex Mono + 한글 Nanum Gothic Coding) */
+.eyebrow {
+  font-family: var(--font-mono); font-size: 12px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 14px;
+}
+.num { font-family: var(--font-mono); font-size: 13px; color: var(--accent); margin-right: 10px; }
+.mono-num { font-family: var(--font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+/* ---------- 4b. 테마 토글 ----------
+   마크업:
+   <div class="topbar">
+     <p class="eyebrow">…</p>
+     <button id="theme-toggle" type="button" aria-live="polite">
+       <span class="dot" aria-hidden="true"></span><span id="theme-label">시스템</span>
+     </button>
+   </div>
+   스크립트는 SKILL.md 참고 — 시스템 → 라이트 → 다크 3단 순환, localStorage 보관 */
+.topbar { display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin: 0 0 14px; }
+.topbar .eyebrow { margin: 0; padding-top: 5px; }
+#theme-toggle {
+  flex: none; display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+  color: var(--ink-soft); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 5px 12px; cursor: pointer; line-height: 1.6;
+  transition: border-color .15s ease, color .15s ease;
+}
+#theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+#theme-toggle .dot { width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); flex: none; }
+
+/* ---------- 5. 카드 ---------- */
+.card, .fact, .item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 15px 18px;
+}
+.grid2 {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px; margin: 20px 0 4px;
+}
+
+/* 순차 구조 레일 (연차·단계 등 실제 순서가 있을 때만) */
+.rail {
+  border-left: 3px solid var(--accent);
+  padding: 4px 0 8px 26px; margin: 36px 0 0;
+}
+.rail-label {
+  font-family: var(--font-mono); font-size: 12.5px;
+  letter-spacing: 0.12em; color: var(--accent); margin-bottom: 4px;
+}
+
+/* 배지 */
+.side {
+  display: inline-block; font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.08em;
+  color: var(--amber); background: var(--amber-soft);
+  border-radius: 3px; padding: 2px 8px; margin-left: 8px; vertical-align: 2px;
+}
+
+/* ---------- 6. 표 ---------- */
+.tbl-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px; background: var(--surface); }
+th {
+  text-align: left; font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: 0.06em; font-weight: 500;
+  color: var(--th-ink); background: var(--th-bg);
+  padding: 11px 15px; border-bottom: 1px solid var(--line); white-space: nowrap;
+}
+td {
+  padding: 11px 15px; border-bottom: 1px solid var(--line);
+  vertical-align: top; line-height: 1.6;
+  word-break: keep-all; overflow-wrap: normal;  /* 한글 단어 중간 줄바꿈 금지 */
+}
+tr:last-child td { border-bottom: none; }
+td.k { white-space: nowrap; font-weight: 500; }
+
+/* ---------- 7. 콜아웃 ---------- */
+.note {
+  background: var(--surface-2); border-left: 3px solid var(--amber);
+  border-radius: 0 6px 6px 0; padding: 15px 20px; margin: 20px 0; font-size: 14.5px;
+}
+.note b { color: var(--amber); }
+.key {
+  background: var(--accent-soft); border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0; padding: 15px 20px; margin: 20px 0; font-size: 14.5px;
+}
+.key b { color: var(--accent); }
+
+/* ---------- 8. 푸터 ---------- */
+footer {
+  margin-top: 72px; padding-top: 18px; border-top: 1px solid var(--line);
+  font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft);
+}
+
+/* ---------- 9. 인쇄 ---------- */
+@media print {
+  body { background: #FFFFFF; color: #333333; }
+  #theme-toggle { display: none; }
+  .wrap { max-width: none; padding: 0; }
+}

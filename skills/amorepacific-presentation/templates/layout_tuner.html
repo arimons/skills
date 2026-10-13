@@ -1,0 +1,125 @@
+<!--
+  레이아웃 조절 패널 (붙여넣기용 스니펫)
+
+  쓰는 법
+  1) 조절하고 싶은 수치를 :root의 CSS 변수로 먼저 빼둡니다.
+       :root{ --card-h:530px; --pad-t:18px; ... }
+       .panel{ padding:var(--pad-t) var(--pad-x) var(--pad-b) }
+  2) 아래 블록을 </body> 앞에 통째로 붙여넣습니다.
+  3) KNOBS 배열을 그 문서의 변수에 맞게 고칩니다. [변수명, 라벨, 최솟값, 최댓값]
+  4) 브라우저에서 T 키를 눌러 패널을 열고 슬라이더로 맞춘 뒤 "값 복사하기" →
+     :root 블록에 붙여넣으면 확정됩니다.
+
+  슬라이더는 CSS 변수 값만 바꾸므로 마크업 구조는 절대 변하지 않습니다.
+  인쇄(@media print)와 최종 배포 시에는 보이지 않습니다.
+-->
+<style>
+#tuner{position:fixed;top:12px;right:12px;width:290px;max-height:calc(100vh - 24px);overflow:auto;
+  background:#fff;border:1px solid var(--light-gray);border-radius:12px;padding:14px 16px;
+  box-shadow:0 10px 40px rgba(0,28,88,.18);font-size:13px;font-family:var(--font-main);z-index:99;display:none}
+#tuner.on{display:block}
+#tuner h4{margin:0 0 4px;font-size:14px;color:var(--pacific-blue)}
+#tuner .hint{color:var(--gray);margin:0 0 10px;font-size:12px;line-height:1.4}
+#tuner .row{display:grid;grid-template-columns:1fr 46px;align-items:center;gap:6px;margin-bottom:2px}
+#tuner label{color:#4b5563}
+#tuner input[type=range]{grid-column:1 / span 2;width:100%;margin:0 0 6px}
+#tuner .val{text-align:right;font-weight:700;color:var(--amore-blue)}
+#tuner .status{margin:10px 0;padding:8px 10px;border-radius:8px;background:var(--off-white);
+  font-size:12px;line-height:1.5;white-space:pre-line}
+#tuner .status.bad{background:var(--soft-red);color:var(--alert-red)}
+#tuner button{width:100%;padding:8px;border:0;border-radius:8px;background:var(--amore-blue);
+  color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+@media print{#tuner{display:none!important}}
+</style>
+
+<div id="tuner">
+  <h4>레이아웃 조절</h4>
+  <p class="hint">T 키로 열고 닫습니다. 슬라이더는 CSS 변수만 바꾸므로 구조는 그대로입니다. 다 맞춘 뒤 아래 버튼으로 값을 복사해 <code>:root</code>에 붙여넣으세요.</p>
+  <div id="tuner-rows"></div>
+  <div class="status" id="tuner-status"></div>
+  <button id="tuner-copy">값 복사하기</button>
+</div>
+
+<script>
+(function(){
+  // ── 문서에 맞게 고쳐 쓰는 부분 ──────────────────────────
+  const KNOBS=[
+    ['--content-top','콘텐츠 시작',100,260],
+    ['--content-bottom','콘텐츠 끝',60,200],
+    ['--card-h','카드 높이',380,680],
+    ['--row-gap','행 간격',0,48],
+    ['--col-gap','카드 간격',8,48],
+    ['--pad-t','카드 위 여백',4,48],
+    ['--pad-x','카드 좌우 여백',8,56],
+    ['--pad-b','카드 아래 여백',4,48],
+  ];
+  const FIT_SELECTOR='.panel';     // 넘침을 감시할 박스
+  const GUARD_SELECTOR='.footerline'; // 이 선을 넘으면 경고
+  // ────────────────────────────────────────────────────
+
+  const root=document.documentElement,
+        rows=document.getElementById('tuner-rows'),
+        box=document.getElementById('tuner'),
+        status=document.getElementById('tuner-status');
+  const base={};
+
+  KNOBS.forEach(([k,label,min,max])=>{
+    const cur=parseFloat(getComputedStyle(root).getPropertyValue(k));
+    base[k]=cur;
+    const d=document.createElement('div');
+    d.innerHTML=`<div class="row"><label>${label}</label><span class="val" id="v${k}">${cur}</span></div>
+                 <input type="range" min="${min}" max="${max}" step="1" value="${cur}" data-k="${k}">`;
+    rows.appendChild(d);
+  });
+
+  function check(){
+    const msgs=[]; let bad=false;
+    document.querySelectorAll(FIT_SELECTOR).forEach((el,i)=>{
+      if(!el.lastElementChild) return;
+      const r=el.getBoundingClientRect();
+      const scale=r.width/el.offsetWidth||1;
+      const pad=parseFloat(getComputedStyle(el).paddingBottom);
+      const room=Math.round((r.height-(el.lastElementChild.getBoundingClientRect().bottom-r.top))/scale-pad);
+      if(room<0) bad=true;
+      msgs.push(`박스 ${String(i+1).padStart(2,'0')} 남은 여백 ${room}px`);
+    });
+    const guard=document.querySelector(GUARD_SELECTOR);
+    if(guard){
+      const stage=document.querySelector('.slide,.page');
+      const sc=stage?stage.getBoundingClientRect().width/stage.offsetWidth:1;
+      let lowest=0;
+      document.querySelectorAll(FIT_SELECTOR+',.takeaway,.glossary').forEach(el=>{
+        lowest=Math.max(lowest,el.getBoundingClientRect().bottom);
+      });
+      const clear=Math.round((guard.getBoundingClientRect().top-lowest)/sc);
+      if(clear<0) bad=true;
+      msgs.push(`footer line까지 ${clear}px`);
+    }
+    status.textContent=msgs.join('\n');
+    status.className='status'+(bad?' bad':'');
+  }
+
+  rows.addEventListener('input',e=>{
+    const k=e.target.dataset.k; if(!k) return;
+    root.style.setProperty(k,e.target.value+'px');
+    document.getElementById('v'+k).textContent=e.target.value;
+    check();
+  });
+
+  document.getElementById('tuner-copy').addEventListener('click',()=>{
+    const out=KNOBS.map(([k])=>`  ${k}:${(root.style.getPropertyValue(k)||base[k]+'px').trim()};`).join('\n');
+    navigator.clipboard?.writeText(':root{\n'+out+'\n}');
+    const b=document.getElementById('tuner-copy');
+    b.textContent='복사했습니다'; setTimeout(()=>b.textContent='값 복사하기',1200);
+  });
+
+  addEventListener('keydown',e=>{
+    if(e.key==='t'||e.key==='T'){
+      box.classList.toggle('on');
+      if(box.classList.contains('on')) check();
+    }
+  });
+
+  check();
+})();
+</script>
