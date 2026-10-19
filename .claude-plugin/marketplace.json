@@ -1,0 +1,19 @@
+{
+  "name": "arimons-skills",
+  "owner": {
+    "name": "arimons"
+  },
+  "plugins": [
+    {
+      "name": "ap-report-skills",
+      "source": "./",
+      "description": "회사 보고서·발표자료 작성용 스킬 모음 (HTML 문서 디자인, 아모레퍼시픽 발표자료, 슬라이드 HTML을 PPTX로 변환)",
+      "strict": false,
+      "skills": [
+        "./skills/html-document-design",
+        "./skills/amorepacific-presentation",
+        "./skills/slide-to-pptx"
+      ]
+    }
+  ]
+}
