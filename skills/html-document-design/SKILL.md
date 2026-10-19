@@ -1,6 +1,6 @@
 ---
 name: html-document-design
-description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·보고서·기획서·가이드·아티팩트를 만들거나 수정할 때 항상 적용. 라이트 모드 기본 + 기기 추종 그레이 다크모드 + 테마 전환 버튼, 기본 서체 IBM Plex Sans KR(사내 공유용은 아리따 돋움), AMORE/PACIFIC Blue 토큰, 한글 mono fallback(Nanum Gothic Coding) 규칙 포함. Use when creating or editing any HTML document, report, or artifact.
+description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·보고서·기획서·가이드·아티팩트를 만들거나 수정할 때 항상 적용. 라이트 모드 기본 + 기기 추종 그레이 다크모드 + 테마 전환 버튼, 기본 서체 IBM Plex Sans KR(사내 공유용은 아리따 돋움), AMORE/PACIFIC Blue 토큰, 한·영 고정폭 Nanum Gothic Coding 통일 및 수치 표 정렬 규칙 포함. Use when creating or editing any HTML document, report, or artifact.
 ---
 
 # HTML Document Design — 박창현 개인 가이드
@@ -18,7 +18,7 @@ description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·�
 4b. **테마 전환 버튼을 반드시 넣는다.** 기기 설정 추종만으로는 부족하다. 문서 우측 상단에 `시스템 → 라이트 → 다크` 3단 순환 버튼을 두고, 선택은 `localStorage`에 try/catch로 보관한다. `시스템`일 때는 `data-theme` 속성을 지운다. 인쇄 시 숨긴다.
 5. **서체는 IBM Plex Sans KR이 기본**, 사내 공유(OneDrive·Teams)용은 아리따 돋움이다("산출물 분기" 절). 헤딩은 h1·h2가 weight 700 + letter-spacing -0.02em, h3는 600 + -0.01em, 색은 --head. 위계는 3단계 이하. (Plex는 700이 최대 굵기다. 아리따일 때는 자간을 `data-font="arita"`가 함께 조인다.)
 6. **이미지는 항상 문서 안에 넣는다.** 이미지·아이콘은 `data:` URI(base64)로 인라인하고, 다이어그램은 이미지 대신 인라인 SVG를 우선한다. **폰트는 파일에 담지 않는다.** 기본은 Google Fonts(Plex), 사내 공유용은 전사 PC에 설치된 아리따 돋움을 이름으로 부른다(아래 "산출물 분기" 절).
-7. **monospace 영역의 한글 fallback**: 영문 mono 폰트(IBM Plex Mono 등)는 한글 글리프가 없어 굴림으로 떨어진다. 반드시 `"IBM Plex Mono", "Nanum Gothic Coding", "D2Coding", monospace` 겹침 스택을 사용해 한글이 나눔 코딩 계열로 렌더되게 한다. Google Fonts 환경에서는 Nanum Gothic Coding을 함께 로드한다.
+7. **한·영 고정폭 서체는 Nanum Gothic Coding으로 통일한다.** 코드·로그·실행 ID·경로·수치·mono 라벨에는 `"Nanum Gothic Coding", "D2Coding", monospace`를 사용한다. IBM Plex Mono를 앞에 두지 않는다. Google Fonts 환경에서는 Nanum Gothic Coding(400;700)을 로드한다. 서체 비교에서 Plex Mono와 Nanum Gothic Coding을 비교한다면 Plex Mono의 한글도 Nanum으로 대체되어 같게 보인다는 점을 표시한다.
 
 ## 글은 어떻게 쓰나
 
@@ -36,7 +36,7 @@ description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·�
 
 ## 타이포그래피
 
-- **기본**: Heading·Body 모두 "IBM Plex Sans KR"(wght 400;500;600;700), Mono "IBM Plex Mono"+"Nanum Gothic Coding".
+- **기본**: Heading·Body 모두 "IBM Plex Sans KR"(wght 400;500;600;700), Mono는 한·영 모두 "Nanum Gothic Coding"(400;700).
 - **사내 공유용**: `<html data-font="arita">` 한 줄로 아리따 돋움 + 좁힌 자간(본문 -0.04em, 헤딩 -0.06em)으로 바뀐다. Mono 라벨은 그대로다.
 - 슬라이드 HTML은 문서형과 별개로 아리따 돋움을 기본으로 쓰며 `amorepacific-presentation` 스킬이 맡는다.
 - CDN 로드는 Google Fonts `@import`다. 아티팩트는 `<head>`에 손댈 수 없으므로 `<style>` 첫 줄 `@import`로 로드한다.
@@ -49,6 +49,8 @@ description: 박창현의 개인 HTML 문서 디자인 가이드. HTML 문서·�
 
 - 카드: white surface + 1px --line 보더 + radius 6px. **섀도우 금지** (얇은 선 + 여백이 정체성).
 - 표: `.tbl-wrap`(overflow-x:auto) 래퍼 필수 — 페이지 가로 스크롤 금지. 헤더는 --th-bg 배경 + --th-ink + mono 스택.
+- **수치 표는 내용에 맞게 조밀하게 구성한다.** 짧은 ID·수치 위주 표는 `.tbl-wrap.table-compact`로 폭을 내용에 맞추고 불필요한 전체 폭 확장과 큰 열 간격을 피한다. 셀 패딩은 8px 14px을 기본으로 한다. 긴 설명·요약이 있는 표는 가용 폭을 활용한다.
+- **열마다 헤더와 본문의 정렬 기준을 맞춘다.** 텍스트 열은 좌측, 숫자 열은 헤더·값 모두 우측 정렬한다. 수치 열의 `th`와 `td`에 `.numeric`을 붙이고 `tabular-nums`를 사용한다. 숫자의 소수 자릿수는 같은 지표끼리 통일한다. 수치 표에는 얇은 `--line` 세로 구분선을 기본으로 두어 열 경계를 드러낸다. 코드·수치의 자간은 `normal`로 유지한다.
 - 콜아웃: `.note`(amber 좌측 3px 바, 주의·전제) / `.key`(accent 좌측 3px 바, 핵심 메시지).
 - 순차 레일(좌측 3px accent 보더): 연차·단계 등 실제 순서가 있는 내용에만.
 - 테마 토글: eyebrow와 같은 줄(`.topbar` flex, space-between)에 놓는 pill 버튼. mono 스택 + 1px --line 보더 + radius 999px, accent 도트 하나. hover에서 보더·글자를 --accent로.
@@ -128,4 +130,4 @@ python3 embed_fonts.py doc.html --mode doc             # 용량이 걸릴 때만
 
 - 단일 self-contained HTML로 전달. 서체는 공유 경로로 분기한다(위 절): 사내 공유면 `data-font="arita"`, 그 외는 Plex(Google Fonts). CDN 로드는 @import보다 `<link>` 우선.
 - 파일명: `<주제>_<문서성격>.html`, 소문자+언더스코어.
-- 게시 전 체크: ① 라이트/다크 양쪽에서 모든 색이 토큰으로 해석되는가 ② 다크에 네이비·유채색 배경이 없는가 ③ mono 영역 한글이 굴림으로 떨어지지 않는가 ④ 표가 페이지 가로 스크롤을 만들지 않는가 ⑤ 헤딩이 의도한 서체(기본 Plex, 사내 공유 아리따) + --head 적용됐는가 ⑥ 테마 전환 버튼이 3단 순환하고 새로고침 후에도 선택이 유지되는가 ⑦ 한글 헤딩이 단어 중간에서 잘리지 않는가 ⑧ 사내 공유본이면 외부 요청이 0건인가 — Google Fonts `@import`가 남아 있어도 서체는 아리따로 잡히지만, 막힌 요청이 생기지 않도록 이미지가 모두 인라인인지 확인.
+- 게시 전 체크: ① 라이트/다크 양쪽에서 모든 색이 토큰으로 해석되는가 ② 다크에 네이비·유채색 배경이 없는가 ③ mono 영역의 한·영이 Nanum Gothic Coding으로 표시되는가 ④ 표가 페이지 가로 스크롤을 만들지 않고 수치 열의 헤더·값 정렬 및 표 밀도가 적절한가 ⑤ 헤딩이 의도한 서체(기본 Plex, 사내 공유 아리따) + --head 적용됐는가 ⑥ 테마 전환 버튼이 3단 순환하고 새로고침 후에도 선택이 유지되는가 ⑦ 한글 헤딩이 단어 중간에서 잘리지 않는가 ⑧ 사내 공유본이면 외부 요청이 0건인가 — Google Fonts `@import`가 남아 있어도 서체는 아리따로 잡히지만, 막힌 요청이 생기지 않도록 이미지가 모두 인라인인지 확인.
