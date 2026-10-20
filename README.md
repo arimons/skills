@@ -1,47 +1,45 @@
 # arimons/skills
 
-개인용 + Vibe Coding 강의 배포용 AI 에이전트 스킬 모음.
-
-[Agent Skills](https://github.com/vercel-labs/skills) 오픈 스탠다드를 따릅니다.
-
-## 설치
-
-```bash
-npx skills add arimons/skills -g
-```
+개인용 설계 인터뷰와 사내 AI 연동·보고서·발표자료 스킬 모음입니다. 원본은 `~/Developer/skills` 한 곳에서 관리합니다.
 
 ## 스킬 목록
 
 | 스킬 | 설명 |
 |------|------|
-| `llm-model-reference` | Gemini/OpenAI/Claude 현행 모델 레퍼런스 (deprecated 방지, thinking budget 가이드 포함) |
-| `grill-me` | 프로젝트 설계 전 인터뷰로 막연한 아이디어를 구체적 설계로 변환 |
+| [grill-me](skills/grill-me/SKILL.md) | 직접 요청했을 때 계획·설계를 검증하는 인터뷰 시작 |
+| [grilling](skills/grilling/SKILL.md) | grill-me가 사용하는 인터뷰 본체. 별도 사용 준비는 필요 없음 |
+| [internal-ai-endpoint](skills/internal-ai-endpoint/SKILL.md) | 사내 AI Studio REST 연동 규격과 키 없는 환경 파일 템플릿 |
+| [html-document-design](skills/html-document-design/SKILL.md) | 개인·사내 HTML 보고서와 가이드 디자인 |
+| [amorepacific-presentation](skills/amorepacific-presentation/SKILL.md) | BY27 사내 HTML 발표자료 템플릿·로고·푸터 |
+| [slide-to-pptx](skills/slide-to-pptx/SKILL.md) | 고정 배치 HTML 슬라이드를 편집 가능한 PPTX로 변환 |
 
-## 업데이트
+`grill-me`와 `grilling`은 Matt Pocock 최신 확인 커밋에서 가져왔습니다. [출처·로컬 변경](UPSTREAM.md)을 참고하세요. 범용 인터뷰에는 `grill-me`, 용어집·ADR을 만드는 코드 설계에는 업스트림 `grill-with-docs`가 맞습니다. 후자는 현재 설치하지 않습니다.
 
-```bash
-npx skills update -g
-```
+## 개인 설치와 업데이트
 
-## HTML 문서·발표자료 스킬
+- Codex: `~/.agents/skills/<스킬명>`에서 이 저장소의 `skills/<스킬명>`으로 심볼릭 링크를 연결합니다.
+- Claude Code: `~/.claude/skills/<스킬명>`에서도 같은 원본으로 연결합니다.
+- Codex의 `~/.codex/skills`에 동일한 링크를 추가하지 않습니다. 내장 `.system`은 유지합니다.
+- 원본 저장소를 업데이트하면 연결된 스킬에도 반영됩니다. `npx skills update -g`로 별도 복사본을 다시 설치하지 않습니다.
 
-2026-10-13 제공 `ap-skills_20261013_r6.zip`에서 검토하여 반영한 r6 스킬입니다. 사내 공유 HTML과 PPTX의 기본 서체는 아리따 돋움이며, 슬라이드 템플릿은 Finder 미리보기도 지원합니다.
+## 플러그인 배포
 
-| 스킬 | 설명 |
-|------|------|
-| `html-document-design` | HTML 보고서·가이드 디자인, 테마 전환, 사내 공유용 아리따 돋움 |
-| `amorepacific-presentation` | BY27 사내 HTML 발표자료 템플릿·로고·푸터 |
-| `slide-to-pptx` | 1920×1080 고정 배치 HTML을 편집 가능한 PPTX로 변환 |
+`.claude-plugin/marketplace.json`에 다음 묶음을 등록합니다.
 
-### Codex / Claude Code 공통 설치
+- `ap-report-skills`: HTML 문서 디자인, 사내 발표자료, HTML→PPTX 변환.
+- `personal-tools`: grill-me와 grilling, 사내 AI 엔드포인트.
 
-저장소의 `skills/<스킬명>`을 공통 원본으로 두고, Codex 개인 경로 `~/.agents/skills/<스킬명>`과 Claude Code 개인 경로 `~/.claude/skills/<스킬명>`에 심볼릭 링크로 연결합니다. 기존 항목이 있다면 먼저 백업하세요. 기존 Codex 설치의 `~/.codex/skills` 링크를 유지하는 경우에도 같은 원본을 가리키게 합니다.
+개인 로컬 설치는 위 심볼릭 링크 방식만 사용합니다. 같은 에이전트에서 동일 스킬의 플러그인 설치와 수동 연결을 함께 사용하지 않습니다.
 
-### 실행 의존성
+## 사내 AI 설정
+
+실제 사내 주소·에이전트 식별자·API 키는 로컬 `.env`에서 관리하고 Git에 올리지 않습니다. 공개 템플릿에는 실제 주소와 키를 넣지 않습니다. 모델·파라미터는 대상 환경에서 지원하는 값을 확인해 설정합니다.
+
+## 실행 의존성
 
 - 자산 내장: Python 3 표준 라이브러리.
-- 선택적 폰트 내장(명시적으로 요청한 경우만): Python `fonttools`, `brotli` 및 Node.js/npm. 최초 실행 시 npm에서 폰트를 받아 `~/.cache/ap-doc-fonts`에 캐시합니다.
-- PPTX 변환: Python `playwright`, `python-pptx`, Playwright Chromium.
-- `manual-voice`는 선택 사항이며 이 저장소의 제공 ZIP에는 포함되지 않습니다.
+- 선택적 폰트 내장: `fonttools`, `brotli`, Node.js/npm. 요청한 경우에만 사용합니다.
+- PPTX 변환: `playwright`, `python-pptx`, Playwright Chromium.
+- 사내 AI 예제: `requests`, `python-dotenv`.
 
-설치 위치를 기준으로 스크립트 경로를 해석하고, 변환할 파일에는 작업 디렉터리에 맞는 경로를 지정하세요.
+`manual-voice`는 이 묶음에 포함되지 않은 선택 의존성입니다. 디자인·발표자료의 서체·색·로고 규격은 각 스킬을 따릅니다.

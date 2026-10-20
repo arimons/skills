@@ -1,0 +1,4 @@
+interface:
+  display_name: "Internal AI Endpoint"
+  short_description: "사내 AI REST 연동 규격과 키 없는 환경 파일 템플릿을 사용합니다"
+  default_prompt: "$internal-ai-endpoint 스킬로 사내 AI 연동 코드와 환경 파일 템플릿을 만들어줘."
