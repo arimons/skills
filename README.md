@@ -20,6 +20,7 @@
 - Codex: `~/.agents/skills/<스킬명>`에서 이 저장소의 `skills/<스킬명>`으로 심볼릭 링크를 연결합니다.
 - Claude Code: `~/.claude/skills/<스킬명>`에서도 같은 원본으로 연결합니다.
 - Codex의 `~/.codex/skills`에 동일한 링크를 추가하지 않습니다. 내장 `.system`은 유지합니다.
+- 한 번에 연결하려면 `scripts/link-skills.sh`를 실행합니다(`--dry-run`으로 미리 볼 수 있음). 스킬 목록은 `skills/*/SKILL.md`에서 자동으로 찾고, 링크는 상대경로로 겁니다. 이미 실제 폴더가 있으면 `.bak-시각`으로 옮겨 둡니다.
 - 원본 저장소를 업데이트하면 연결된 스킬에도 반영됩니다. `npx skills update -g`로 별도 복사본을 다시 설치하지 않습니다.
 
 ## 플러그인 배포
