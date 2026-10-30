@@ -114,6 +114,7 @@
   });
 
   addEventListener('keydown',e=>{
+    if(document.body.classList.contains('editing')||(e.target&&e.target.isContentEditable)) return;
     if(e.key==='t'||e.key==='T'){
       box.classList.toggle('on');
       if(box.classList.contains('on')) check();

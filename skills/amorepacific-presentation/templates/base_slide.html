@@ -61,6 +61,18 @@ html,body{margin:0;background:#dfe4ea;font-family:var(--font-main);color:var(--d
 .cover-sub{position:absolute;left:158px;top:absolute;font-size:24px;color:var(--gray)}
 .coverline{position:absolute;left:158px;right:158px;height:1px;background:#222;opacity:.75}
 
+
+/* 직접 수정 모드 (E 키): 글자를 브라우저에서 바로 고치고 '수정본 저장'으로 새 파일을 받는다 */
+body.editing [data-ed]{cursor:text}
+body.editing [data-ed]:hover{outline:2px dashed var(--pale-blue);outline-offset:3px}
+body.editing [data-ed]:focus{outline:2px solid var(--amore-blue);outline-offset:3px;border-radius:2px}
+#editbar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:100;display:flex;gap:6px;align-items:center;
+  background:#fff;border:1px solid var(--light-gray);border-radius:999px;padding:6px 8px 6px 16px;
+  box-shadow:0 8px 30px rgba(0,28,88,.18);font:600 13px/1 var(--font-main);color:var(--pacific-blue)}
+#editbar button{border:0;border-radius:999px;padding:8px 14px;background:var(--off-white);color:var(--pacific-blue);font:inherit;cursor:pointer}
+#editbar button[data-a=save]{background:var(--amore-blue);color:#fff}
+@media print{#editbar{display:none}}
+
 @media print{
   html,body{background:#fff}.deck{padding:0;display:block}
   .slide{display:block;transform:none!important;page-break-after:always;box-shadow:none}
@@ -118,9 +130,72 @@ html,body{margin:0;background:#dfe4ea;font-family:var(--font-main);color:var(--d
     slides.forEach((el,k)=>el.classList.toggle('active',k===i));
   }
   addEventListener('resize',fit); new ResizeObserver(fit).observe(document.documentElement); fit();
+  // ── 직접 수정 모드: E 키로 켜고, Esc 또는 '편집 끝'으로 끈다 ─────────
+  let editing=false, bar=null;
+  const EDIT_ROOT='.slide';
+  function markEditable(){
+    document.querySelectorAll(EDIT_ROOT+' *').forEach(el=>{
+      if(/^(SCRIPT|STYLE|IMG|BR)$/i.test(el.tagName)||el.closest('svg,button,[data-ed]')) return;
+      if([...el.childNodes].some(n=>n.nodeType===3&&n.textContent.trim())){
+        el.setAttribute('contenteditable','true'); el.setAttribute('data-ed',''); el.setAttribute('spellcheck','false');
+      }
+    });
+  }
+  function unmarkEditable(root){
+    root.querySelectorAll('[data-ed]').forEach(n=>{
+      n.removeAttribute('contenteditable'); n.removeAttribute('data-ed'); n.removeAttribute('spellcheck');
+    });
+  }
+  function snapshot(){
+    const c=document.documentElement.cloneNode(true);
+    c.querySelectorAll('#editbar').forEach(n=>n.remove());
+    unmarkEditable(c);
+    const b=c.querySelector('body'); b.classList.remove('editing'); if(!b.getAttribute('class')) b.removeAttribute('class');
+    c.querySelectorAll('.slide').forEach(el=>{el.style.removeProperty('transform'); if(!el.getAttribute('style')) el.removeAttribute('style');});
+    const d=c.querySelector('#deck'); if(d){d.style.removeProperty('height'); if(!d.getAttribute('style')) d.removeAttribute('style');}
+    const t=c.querySelector('#tuner'); if(t) t.classList.remove('on');
+    return '<!DOCTYPE html>\n'+c.outerHTML;
+  }
+  function saveCopy(){
+    const name=decodeURIComponent(location.pathname.split('/').pop()||'slides').replace(/\.html?$/i,'').replace(/_edited$/,'');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([snapshot()],{type:'text/html'}));
+    a.download=name+'_edited.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function setEdit(on){
+    editing=on; document.body.classList.toggle('editing',on);
+    if(on){
+      markEditable();
+      bar=document.createElement('div'); bar.id='editbar';
+      bar.innerHTML='<span>수정 중</span><button type="button" data-a="prev">◀</button><button type="button" data-a="next">▶</button><button type="button" data-a="save">수정본 저장</button><button type="button" data-a="done">편집 끝</button>';
+      bar.addEventListener('click',e=>{
+        const a=e.target.dataset&&e.target.dataset.a;
+        if(a==='prev') show(i-1); else if(a==='next') show(i+1);
+        else if(a==='save') saveCopy(); else if(a==='done') setEdit(false);
+      });
+      document.body.appendChild(bar);
+    }else{
+      unmarkEditable(document); if(bar){bar.remove(); bar=null;}
+    }
+  }
+  addEventListener('paste',e=>{
+    if(!editing||!e.target.isContentEditable) return;
+    e.preventDefault();
+    document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text/plain'));
+  });
+
   addEventListener('keydown',e=>{
+    if(editing){
+      if(e.key==='Escape') setEdit(false);
+      else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault(); saveCopy();}
+      else if(e.key==='Enter'&&!e.shiftKey&&e.target.isContentEditable){e.preventDefault(); document.execCommand('insertLineBreak');}
+      return;
+    }
     const k=e.key;
-    if(k==='ArrowRight'||k===' '||k==='PageDown') show(i+1);
+    if(k==='e'||k==='E') setEdit(true);
+    else if(k==='ArrowRight'||k===' '||k==='PageDown') show(i+1);
     else if(k==='ArrowLeft'||k==='PageUp') show(i-1);
     else if(k==='Home') show(0);
     else if(k==='End') show(slides.length-1);
@@ -128,6 +203,7 @@ html,body{margin:0;background:#dfe4ea;font-family:var(--font-main);color:var(--d
     else if(k==='p'||k==='P') print();
   });
   addEventListener('wheel',e=>{
+    if(editing) return;
     const now=Date.now(); if(now-lock<600) return; lock=now;
     show(i+(e.deltaY>0?1:-1));
   },{passive:true});
