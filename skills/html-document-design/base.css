@@ -5,8 +5,8 @@
    ============================================================ */
 
 /* 폰트 — 문서형 HTML의 기본 서체는 IBM Plex Sans KR이다.
-   [기본] 아래 @import (Google Fonts). 내 PC에서 열거나 아티팩트로 게시할 때 그대로 쓴다.
-   [사내 공유: OneDrive·Teams] 뷰어가 외부 CDN을 막으므로 <html data-font="arita"> 로 바꾼다.
+   [기본] 아래 @import (Google Fonts). HTML 문서는 어디로 공유하든 Plex다.
+   [예외] 문서에 아리따 돋움을 써 달라는 요청이 있을 때만 <html data-font="arita"> 로 바꾼다.
    아리따 돋움은 전사 PC에 설치돼 있어 파일에 담을 필요가 없다. 자간(-0.04em)도 이 속성이 함께 적용한다.
    (Claude 아티팩트처럼 <head>에 손댈 수 없으면 이 @import를 <style> 첫 줄에 둔다.) */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Gothic+Coding:wght@400;700&display=swap');
@@ -76,7 +76,7 @@ body {
   background: var(--bg);      /* 반드시 명시 — 호스트 배경 비침 방지 */
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   letter-spacing: var(--ls-body);
@@ -97,11 +97,11 @@ h2 {
   color: var(--head); margin: 0 0 16px; text-wrap: balance;
 }
 h3 { font-weight: 600; letter-spacing: var(--ls-h3); font-size: 16.5px; color: var(--head); margin: 26px 0 8px; }
-p  { margin: 0 0 14px; max-width: 68ch; }
-.lede { color: var(--ink-soft); font-size: 17px; max-width: 64ch; }
+p  { margin: 0 0 14px; max-width: 40em; }
+.lede { color: var(--ink-soft); font-size: 18px; max-width: 38em; }
 .soft { color: var(--ink-soft); }
 
-ul { padding-left: 20px; margin: 10px 0 16px; max-width: 66ch; }
+ul { padding-left: 20px; margin: 10px 0 16px; max-width: 40em; }
 li { margin-bottom: 8px; }
 li::marker { color: var(--accent); }
 
@@ -235,6 +235,17 @@ body.editing #editbar [data-a="start"] { display: none; }
 body.editing [data-ed] { cursor: text; }
 body.editing [data-ed]:hover { outline: 1px dashed var(--accent); outline-offset: 3px; }
 body.editing [data-ed]:focus { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+/* ---------- 9b. 넓은 블록 · 모바일 ---------- */
+/* 표·figure 같은 넓은 블록: 본문(780px)보다 넓되 1000px 상한, 가운데 정렬 */
+.wide { width: min(1000px, calc(100vw - 48px)); position: relative; left: 50%; transform: translateX(-50%); }
+@media (max-width: 700px) {
+  body { font-size: 15px; }
+  .wrap { padding: 40px 16px 72px; }
+  .lede { font-size: 16px; max-width: none; }
+  p, ul { max-width: none; }
+  .wide { width: 100%; left: 0; transform: none; }
+}
 
 /* ---------- 10. 인쇄 ---------- */
 @media print {
