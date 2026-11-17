@@ -20,6 +20,7 @@ from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
+from pptx.oxml.ns import qn
 from pptx.util import Emu, Pt
 
 PX = 914400 / 144.0  # 1px -> EMU
@@ -135,6 +136,22 @@ def color(c):
     return RGBColor(int(c[0]), int(c[1]), int(c[2]))
 
 
+def set_face(run, face: str) -> None:
+    """라틴과 동아시아 글꼴을 함께 지정한다.
+
+    font.name은 <a:latin>만 바꾼다. PowerPoint는 한글을 <a:ea>로 그리므로
+    이것을 빠뜨리면 한글이 테마 기본 글꼴(맑은 고딕 등)로 나온다.
+    """
+    run.font.name = face
+    rPr = run._r.get_or_add_rPr()
+    ea = rPr.find(qn("a:ea"))
+    if ea is None:
+        ea = rPr.makeelement(qn("a:ea"), {})
+        latin = rPr.find(qn("a:latin"))
+        latin.addnext(ea)                            # 스키마 순서: latin → ea → cs
+    ea.set("typeface", face)
+
+
 def build(html_path: str, out_path: str, font: str = FONT, font_bold: str | None = None) -> None:
     if font_bold is None and font == FONT:
         font_bold = FONT_BOLD
@@ -222,9 +239,11 @@ def build(html_path: str, out_path: str, font: str = FONT, font_bold: str | None
                     rn.text = run["t"]
                     rn.font.size = Pt(run["size"] / 2)
                     if run["bold"] and font_bold:
-                        rn.font.name, rn.font.bold = font_bold, False
+                        set_face(rn, font_bold)
+                        rn.font.bold = False
                     else:
-                        rn.font.name, rn.font.bold = font, run["bold"]
+                        set_face(rn, font)
+                        rn.font.bold = run["bold"]
                     rn.font.color.rgb = color(run["color"])
 
     # 눈으로 보지 않아도 걸러지는 것들만 자동 점검한다

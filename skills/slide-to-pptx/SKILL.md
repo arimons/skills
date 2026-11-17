@@ -14,7 +14,7 @@ python3 scripts/html2pptx.py deck.html deck.pptx
 python3 scripts/html2pptx.py deck.html deck.pptx --font "Pretendard" --font-bold "Pretendard"
 ```
 
-`--font`를 주지 않으면 아리따 돋움으로 지정됩니다. 본문은 "Arita Dotum KR Medium", 굵은 글씨는 "Arita Dotum KR Bold"입니다. 이 서체는 굵기마다 서체 이름이 따로라서 bold 속성 대신 이름으로 구분합니다. 전사 PC에 자동 설치되므로 폰트 첨부도 필요 없습니다. 다른 서체로 내보낼 때만 `--font`를 지정하고, 굵기 서체가 따로 없으면 `--font-bold`에 같은 이름을 줍니다.
+`--font`를 주지 않으면 아리따 돋움으로 지정됩니다. 본문은 "Arita Dotum KR Medium", 굵은 글씨는 "Arita Dotum KR Bold"입니다. 이 서체는 굵기마다 서체 이름이 따로라서 bold 속성 대신 이름으로 구분합니다. 전사 PC에 자동 설치되므로 폰트 첨부도 필요 없습니다. 다른 서체로 내보낼 때만 `--font`를 지정하고, 굵기 서체가 따로 없으면 `--font-bold`에 같은 이름을 줍니다. PowerPoint는 한글을 동아시아 글꼴 칸(`ea`)으로 그리므로, 스크립트는 런마다 라틴 글꼴과 `ea`를 같은 서체로 함께 지정합니다.
 
 ## 폰트 첨부
 
