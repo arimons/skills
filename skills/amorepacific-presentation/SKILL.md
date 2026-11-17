@@ -1,6 +1,6 @@
 ---
 name: amorepacific-presentation
-description: 'HTML 슬라이드로 아모레퍼시픽 사내 보고·발표자료를 만들거나, 기존 슬라이드 HTML의 레이아웃·여백·컬러·문구를 고칠 때 항상 적용. BY27 템플릿 규격과 로고·푸터 자산을 적용해 단독 실행되는 단일 HTML 파일 하나를 산출한다. Use when creating or editing an AMOREPACIFIC internal presentation slide in HTML.'
+description: 'HTML 슬라이드로 아모레퍼시픽 사내 보고·발표자료를 만들거나, 기존 슬라이드 HTML의 레이아웃·여백·컬러·문구를 고칠 때 항상 적용. BY27 템플릿 규격과 로고·푸터 자산을 적용해 단독 실행되는 단일 HTML 파일 하나를 산출한다. PPTX는 사용자가 PPT·PPTX를 명시할 때만 만들며 references/pptx-typography.md 조판 규칙을 따른다. Use when creating or editing an AMOREPACIFIC internal presentation slide in HTML.'
 ---
 
 # AMOREPACIFIC Presentation
@@ -82,7 +82,9 @@ HTML 작성 중에는 `src` 자리에 아래 토큰을 그대로 두고, 마지�
 
 ## PPTX가 필요할 때
 
-최종 발표용으로 PowerPoint에서 레이아웃을 직접 다듬어야 하면 `slide-to-pptx` 스킬로 변환합니다. 이 스킬에서는 HTML까지만 책임집니다.
+기본 산출물은 페이지 전환형 단일 HTML입니다. `.pptx`는 사용자가 PPT·PowerPoint·파워포인트·PPTX를 명시했을 때만 만듭니다. "PPT처럼", "슬라이드처럼"은 화면 구성을 말한 것이므로 HTML로 만들고, 형식이 불명확해도 HTML을 기본값으로 둡니다.
+
+PPTX를 만들 때는(직접 생성하든 `slide-to-pptx` 스킬로 변환하든) 작업 전에 `references/pptx-typography.md`를 읽고 따릅니다. 아리따가 없는 생성 환경에서 잰 글자 폭을 믿지 않고, 중요 문구를 명시적 줄바꿈과 줄별 독립 박스로 배치하고, 자동 맞춤을 끄는 규칙과 검수 항목이 들어 있습니다. HTML 슬라이드에는 이 문서를 적용하지 않습니다.
 
 ## 자주 나는 실수
 
