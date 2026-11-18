@@ -6,23 +6,24 @@
 INTERNAL_BASE_URL=
 INTERNAL_API_KEY=
 # Recommended default for lightweight analysis:
-INTERNAL_MODEL=gemini-3-flash-preview
+INTERNAL_MODEL=gemini-3.8-flash
 # Gemini thinking budget guidance:
 # - Use 0 for fast extraction, classification, simple summarization, and boilerplate tasks.
 # - Use 0〜1024 for ordinary work that needs some context reasoning.
 # - Increase only for hard reasoning/validation because thinking tokens can contribute to token limits.
 INTERNAL_THINKING_BUDGET=0
 # Other available examples:
-# INTERNAL_MODEL=gemini-3.5-flash
-# INTERNAL_MODEL=gemini-3.1-flash-lite
-# INTERNAL_MODEL=gemini-3.1-pro-preview
-# INTERNAL_MODEL=gpt-5.4-mini
-# INTERNAL_MODEL=gpt-5.5
+# INTERNAL_MODEL=gpt-6-luna
+# INTERNAL_MODEL=gpt-6.1-sol
+# Claude Opus 5.5 / Claude Sonnet 5.5 (AWS Bedrock) are also listed in AI Studio,
+# but their REST path is not documented in this skill. Do not guess it.
 ```
 
 Keep `INTERNAL_API_KEY` out of shared files. Put the real key only in a local `.env`.
 
-Use the lightest model that produces reliable output for the task. Reserve pro or newest GPT models for harder reasoning, long synthesis, or validation passes.
+Use the lightest model that produces reliable output for the task. `gemini-3.8-flash` fits extraction, classification and document/image reading (PDFs included). Reserve `gpt-6.1-sol` for harder reasoning, long synthesis, tool calling or validation passes; `gpt-6-luna` sits between them.
+
+For GPT-6 models, send `reasoning: {"effort": "low"}` (or higher) instead of `temperature`; they do not accept effort `none`.
 For Gemini-family models, set `thinkingBudget` deliberately. A high thinking budget may consume output budget and can make max-token failures more likely.
 
 ## Common Headers
@@ -76,6 +77,17 @@ Image part:
 }
 ```
 
+PDF part (scanned or image-heavy PDFs are read directly; no OCR or parsing step is needed). Keep the raw file under about 14MB because base64 inflates the inline request:
+
+```python
+{
+    "inlineData": {
+        "mimeType": "application/pdf",
+        "data": pdf_base64,
+    }
+}
+```
+
 Text extraction:
 
 ```python
@@ -105,7 +117,7 @@ body = {
             ],
         }
     ],
-    "temperature": 0.2,
+    "reasoning": {"effort": "low"},  # GPT-6: use reasoning, not temperature
     "max_output_tokens": 8192,
 }
 ```

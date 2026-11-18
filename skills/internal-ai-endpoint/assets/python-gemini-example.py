@@ -9,7 +9,7 @@ load_dotenv()
 
 base_url = os.environ["INTERNAL_BASE_URL"].rstrip("/")
 api_key = os.environ["INTERNAL_API_KEY"]
-model = os.getenv("INTERNAL_MODEL", "gemini-3-flash-preview")
+model = os.getenv("INTERNAL_MODEL", "gemini-3.8-flash")
 thinking_budget = int(os.getenv("INTERNAL_THINKING_BUDGET", "0"))
 
 

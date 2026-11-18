@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 DEFAULT_BASE_URL = ""
-DEFAULT_MODEL = "gemini-3-flash-preview"
+DEFAULT_MODEL = "gemini-3.8-flash"
 DEFAULT_THINKING_BUDGET = "0"
 
 
@@ -53,11 +53,8 @@ def main() -> None:
                 "# - Increase only for hard reasoning/validation because thinking tokens can contribute to token limits.",
                 f"INTERNAL_THINKING_BUDGET={thinking_budget}",
                 "# Other available examples:",
-                "# INTERNAL_MODEL=gemini-3.5-flash",
-                "# INTERNAL_MODEL=gemini-3.1-flash-lite",
-                "# INTERNAL_MODEL=gemini-3.1-pro-preview",
-                "# INTERNAL_MODEL=gpt-5.4-mini",
-                "# INTERNAL_MODEL=gpt-5.5",
+                "# INTERNAL_MODEL=gpt-6-luna",
+                "# INTERNAL_MODEL=gpt-6.1-sol",
                 "",
             ]
         ),

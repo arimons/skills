@@ -9,7 +9,7 @@ load_dotenv()
 
 base_url = os.environ["INTERNAL_BASE_URL"].rstrip("/")
 api_key = os.environ["INTERNAL_API_KEY"]
-model = os.getenv("INTERNAL_MODEL", "gpt-5.4-mini")
+model = os.getenv("INTERNAL_MODEL", "gpt-6.1-sol")
 
 
 def image_part(path: str) -> dict:
@@ -44,7 +44,7 @@ def generate_text(prompt: str, image_paths: list[str] | None = None) -> str:
         "model": model,
         "instructions": "You are a helpful assistant.",
         "input": [{"role": "user", "content": content}],
-        "temperature": 0.2,
+        "reasoning": {"effort": "low"},  # GPT-6: use reasoning, not temperature
         "max_output_tokens": 8192,
     }
 
